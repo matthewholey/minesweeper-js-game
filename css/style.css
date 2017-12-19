@@ -1,0 +1,39 @@
+body {
+	text-align: center;
+}
+h1{
+	font-family: impact, sans-serif;
+}
+form{
+	text-align: center;
+}
+#board{
+	display: inline-block;
+	position: relative;
+	height: 500px;
+	width: 500px;
+	font-size: 0;
+	margin-top: 40px;
+	padding: 0;
+	border: 2px solid black;
+	box-sizing: content-box;
+}
+.cell{
+	display: inline-block;
+	position: relative;
+	align-content: center;
+	height: 50px;
+	width: 50px;
+	background-size: 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+	font-size: 24px;
+	margin: 0;
+	padding: 13px 0 0 0;
+	border: 1px solid black;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+.pressed{
+	background-color: grey;
+}
