@@ -1,17 +1,69 @@
 var board = document.getElementById("board");
 var cell = document.createElement("div");
 var allCells = document.getElementsByClassName("cell");
+var pressedCells = document.getElementsByClassName("pressed");
 var allMines = [];
-var modeMine = document.getElementById("modeMine");
-var modeFlag = document.getElementById("modeFlag");
+var radioMine = document.getElementById("radioMine");
+var radioFlag = document.getElementById("radioFlag");
+var placedFlags = [];
 
-document.body.onload = setBoard();
+document.body.onload = setMode(), setBoard();
+
+function setMode(){
+	radioMine.checked = true;
+	if(radioMine.checked == true){
+		toMineMode();
+	}
+	radioMine.addEventListener("click", toMineMode);
+	radioFlag.addEventListener("click", toFlagMode);
+};
+
+function toMineMode(){
+	console.log("You are in Mine Mode.");
+	for (var i = 0; i < allCells.length; i++){
+		allCells[i].removeEventListener("click", placeFlag);
+		allCells[i].addEventListener("click", clicked);
+		setAdjacent(allCells[i]);
+	}
+
+	for (var i = 0; i < allMines.length; i++) {
+		allCells[allMines[i]].removeEventListener("click", clicked);
+		allCells[allMines[i]].addEventListener("click", clickedMine);
+		allCells[allMines[i]].setAttribute("data-mine", "true");
+	}
+
+	for (var i = 0; i < placedFlags.length; i++) {
+		allCells[placedFlags[i]].removeEventListener("click", clickedMine);
+		allCells[placedFlags[i]].removeEventListener("click", clicked);
+	}
+
+	for (var i = 0; i < pressedCells.length; i++) {
+		pressedCells[i].removeEventListener("click", clicked);
+	}
+};
+function toFlagMode(){
+	console.log("You are in Flag Mode.");
+	for(var i = 0; i < allCells.length; i++){
+		allCells[i].removeEventListener("click", clicked);
+		allCells[i].removeEventListener("click", clickedMine);
+	}
+
+	var unPressedCells = document.querySelectorAll("div.cell:not(.pressed)");
+	for (var i = 0; i < unPressedCells.length; i++) {
+		unPressedCells[i].addEventListener("click", placeFlag);
+	}
+
+	for (var i = 0; i < pressedCells.length; i++) {
+		pressedCells[i].removeEventListener("click", placeFlag);
+	}
+};
+
 function setBoard(){
 	cell.className = "cell";
 	cell.id = 1;
 	board.append(cell);
 	function addCells(cell, count, deep){
-		for (var i = 0, copy; i < count-1; i++){
+		for (var i = 0, copy; i < count-1; i++) {
 			copy = cell.cloneNode(deep);
 			cell.parentNode.insertBefore(copy, cell);
 			cell.setAttribute("id", i+2);
@@ -26,11 +78,12 @@ function setBoard(){
 		}
 	}
 	addMines(10);
-	for (var i = 0; i < allMines.length; i++) {
-		allCells[allMines[i]].addEventListener("click", clickedMine);
-		allCells[allMines[i]].setAttribute("data-mine", "true");
-	}
 };
+
+for (var i = 0; i < allMines.length; i++) {
+	allCells[allMines[i]].addEventListener("click", clickedMine);
+	allCells[allMines[i]].setAttribute("data-mine", "true");
+}
 
 for (var i = 0; i < allCells.length; i++){
 	allCells[i].addEventListener("click", clicked);
@@ -39,13 +92,17 @@ for (var i = 0; i < allCells.length; i++){
 
 function removeAllEventListeners(){
 		for(var i = 0; i < allCells.length; i++){
-			allCells[i].removeEventListener('click', clicked);
-			allCells[i].removeEventListener('click', clickedMine);
+			allCells[i].removeEventListener("click", clicked);
+			allCells[i].removeEventListener("click", clickedMine);
+			allCells[i].removeEventListener("click", placeFlag);
 		}
+	radioMine.removeEventListener("click", toMineMode);
+	radioFlag.removeEventListener("click", toFlagMode);
 };
 
+//Click event functions
 function clicked(e){
-	console.log("cell "+e.target.getAttribute("id")+" clicked!");
+	console.log("Cell "+e.target.getAttribute("id")+" clicked!");
 	checkAdjacent(e.target);
 	e.target.removeEventListener("click", clicked);
 };
@@ -60,6 +117,26 @@ function clickedMine(e){
 		mine();
 	}
 	removeAllEventListeners();
+};
+
+function placeFlag(e){
+	var flag = e.target.id-1
+	if(placedFlags.length < allMines.length){
+		if (placedFlags.includes(flag) == false) {
+			console.log("Flag placed at cell "+e.target.getAttribute("id"));
+			placedFlags.push(flag);
+			e.target.style.backgroundColor = "blue";
+		}
+		else if (placedFlags.includes(flag) == true) {
+			console.log("Flag removed from cell "+e.target.getAttribute("id"));
+			function selectedFlag(item) {
+				return item = flag;
+			}
+			var flagIndex = placedFlags.findIndex(selectedFlag);
+			placedFlags.splice(flagIndex);
+			e.target.style.backgroundColor = "";
+		}
+	}
 };
 
 function setAdjacent(clickedCell){
@@ -111,7 +188,6 @@ function checkOpenAdjacentCells(clickedCell) {
 			}
 		}
 	}
-
 	return adjacentCells; 
 }
 
@@ -136,3 +212,10 @@ function checkAdjacentForOpeness(clickedCell){
 	}
 	return adjacentCells;
 }
+
+function win() {
+	removeAllEventListeners();
+	if(placedFlags == allMines) {
+		console.log("You Win!");
+	}
+};
