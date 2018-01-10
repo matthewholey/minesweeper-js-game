@@ -129,7 +129,8 @@ function placeFlag(e){
 		}
 		else {
 			console.log("Flag removed from cell "+e.target.getAttribute("id"));
-			placedFlags.splice(placedFlags.indexOf(flag, 1));
+			var len = placedFlags.length;
+			placedFlags.splice(placedFlags.indexOf(flag), 1);
 			e.target.style.backgroundColor = "";
 		}
 	}
@@ -174,14 +175,16 @@ function checkOpenAdjacentCells(clickedCell) {
 		var adjCell = allCells[adjacentCells[i]];
 		var adjCount = adjCell.getAttribute("data-adjCount");
 		adjCell.removeEventListener("click", clicked);
-		adjCell.setAttribute("class", adjCell.getAttribute("class")+" pressed");
-		if (adjCell.getAttribute("data-marked") != "true") {
-			if (adjCount > 0) {
-				adjCell.append(adjCell.getAttribute("data-adjCount"));
-			}
-			else {
-				var newAdjacentCells = checkAdjacentForOpeness(allCells[adjacentCells[i]]);
-				adjacentCells = adjacentCells.concat(newAdjacentCells).filter(onlyUnique);
+		if (adjCell.className != "pressed") {
+			adjCell.setAttribute("class", adjCell.getAttribute("class")+" pressed");
+			if (adjCell.getAttribute("data-marked") != "true") {
+				if (adjCount > 0) {
+					adjCell.append(adjCell.getAttribute("data-adjCount"));
+				}
+				else {
+					var newAdjacentCells = checkAdjacentForOpeness(allCells[adjacentCells[i]]);
+					adjacentCells = adjacentCells.concat(newAdjacentCells).filter(onlyUnique);
+				}
 			}
 		}
 	}
@@ -215,6 +218,7 @@ function win() {
 		if(placedFlags.length == allMines.length && allMines.includes(placedFlags[i])) {
 			removeAllEventListeners();
 			console.log("You Win!");
+			break;
 		}
 	}
 
