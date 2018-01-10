@@ -127,16 +127,13 @@ function placeFlag(e){
 			placedFlags.push(flag);
 			e.target.style.backgroundColor = "blue";
 		}
-		else if (placedFlags.includes(flag) == true) {
+		else {
 			console.log("Flag removed from cell "+e.target.getAttribute("id"));
-			function selectedFlag(item) {
-				return item = flag;
-			}
-			var flagIndex = placedFlags.findIndex(selectedFlag);
-			placedFlags.splice(flagIndex);
+			placedFlags.splice(placedFlags.indexOf(flag, 1));
 			e.target.style.backgroundColor = "";
 		}
 	}
+	win();
 };
 
 function setAdjacent(clickedCell){
@@ -214,8 +211,11 @@ function checkAdjacentForOpeness(clickedCell){
 }
 
 function win() {
-	removeAllEventListeners();
-	if(placedFlags == allMines) {
-		console.log("You Win!");
+	for (var i = 0; i < placedFlags.length; i++) {
+		if(placedFlags.length == allMines.length && allMines.includes(placedFlags[i])) {
+			removeAllEventListeners();
+			console.log("You Win!");
+		}
 	}
+
 };
