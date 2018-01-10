@@ -175,11 +175,11 @@ function checkOpenAdjacentCells(clickedCell) {
 		var adjCell = allCells[adjacentCells[i]];
 		var adjCount = adjCell.getAttribute("data-adjCount");
 		adjCell.removeEventListener("click", clicked);
-		if (adjCell.className != "pressed") {
+		if (adjCell.className.includes("pressed") == false) {
 			adjCell.setAttribute("class", adjCell.getAttribute("class")+" pressed");
 			if (adjCell.getAttribute("data-marked") != "true") {
 				if (adjCount > 0) {
-					adjCell.append(adjCell.getAttribute("data-adjCount"));
+					adjCell.append(adjCount);
 				}
 				else {
 					var newAdjacentCells = checkAdjacentForOpeness(allCells[adjacentCells[i]]);
