@@ -5,6 +5,7 @@ var pressedCells = document.getElementsByClassName("pressed");
 var allMines = [];
 var radioMine = document.getElementById("radioMine");
 var radioFlag = document.getElementById("radioFlag");
+var flagCounter = document.getElementById("flagCounter");
 var placedFlags = [];
 
 document.body.onload = setMode(), setBoard();
@@ -78,6 +79,10 @@ function setBoard(){
 		}
 	}
 	addMines(10);
+
+	var flagCounter = document.getElementById("flagCounter");
+	var flagsLeft = allMines.length - placedFlags.length;
+	flagCounter.append(flagsLeft);
 };
 
 for (var i = 0; i < allMines.length; i++) {
@@ -117,24 +122,32 @@ function clickedMine(e){
 		mine();
 	}
 	removeAllEventListeners();
+	flagCounter.innerHTML = "";
+	flagCounter.append("Try Again");
 };
 
 function placeFlag(e){
 	var flag = e.target.id-1
-	if(placedFlags.length < allMines.length){
+	if(placedFlags.length <= allMines.length) {
 		if (placedFlags.includes(flag) == false) {
-			console.log("Flag placed at cell "+e.target.getAttribute("id"));
-			placedFlags.push(flag);
-			e.target.style.backgroundColor = "blue";
+			if (placedFlags.length != allMines.length) {
+				console.log("Flag placed at cell "+e.target.getAttribute("id"));
+				placedFlags.push(flag);
+				e.target.style.backgroundImage = "url(./img/flag.png)";
+			}
 		}
 		else {
 			console.log("Flag removed from cell "+e.target.getAttribute("id"));
-			var len = placedFlags.length;
 			placedFlags.splice(placedFlags.indexOf(flag), 1);
-			e.target.style.backgroundColor = "";
+			e.target.style.backgroundImage = "";
+		}
+		var flagsLeft = allMines.length - placedFlags.length;
+		flagCounter.innerHTML = "";
+		flagCounter.append(flagsLeft);
+		if (placedFlags.length == allMines.length) {
+			win();
 		}
 	}
-	win();
 };
 
 function setAdjacent(clickedCell){
@@ -174,9 +187,18 @@ function checkOpenAdjacentCells(clickedCell) {
 	for (var i = 0; i < adjacentCells.length; i++) {
 		var adjCell = allCells[adjacentCells[i]];
 		var adjCount = adjCell.getAttribute("data-adjCount");
+		var flag = adjCell.id-1;
 		adjCell.removeEventListener("click", clicked);
 		if (adjCell.className.includes("pressed") == false) {
 			adjCell.setAttribute("class", adjCell.getAttribute("class")+" pressed");
+			if (placedFlags.includes(flag)) {
+				console.log("Flag removed from cell "+adjCell.getAttribute("id"));
+				placedFlags.splice(placedFlags.indexOf(flag), 1);
+			}
+			var flagsLeft = allMines.length - placedFlags.length;
+			flagCounter.innerHTML = "";
+			flagCounter.append(flagsLeft);
+			adjCell.style.backgroundImage = "";
 			if (adjCell.getAttribute("data-marked") != "true") {
 				if (adjCount > 0) {
 					adjCell.append(adjCount);
@@ -214,12 +236,18 @@ function checkAdjacentForOpeness(clickedCell){
 }
 
 function win() {
-	for (var i = 0; i < placedFlags.length; i++) {
-		if(placedFlags.length == allMines.length && allMines.includes(placedFlags[i])) {
-			removeAllEventListeners();
-			console.log("You Win!");
-			break;
+	var allFlagsOnMines = true; 
+	for (var i = 0; i < placedFlags.length && allFlagsOnMines; i++) {
+		if (!allMines.includes(placedFlags[i])) {
+			allFlagsOnMines = false;
 		}
 	}
-
+	if(allFlagsOnMines) {
+		removeAllEventListeners();
+		console.log("You Win!");
+		flagCounter.innerHTML = "";
+		flagCounter.append("You Win!");
+		flagCounter.style.borderColor = "yellow";
+		flagCounter.style.color = "yellow";
+	}
 };

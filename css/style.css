@@ -1,24 +1,80 @@
 body {
 	text-align: center;
 }
-h1{
-	font-family: impact, sans-serif;
+#container {
+	display: inline-block;
+	position: relative;
+	padding: 0 20px 20px 20px;
+	background-color: lightgreen;
 }
-form{
+h1 {
+	font-family: impact, sans-serif;
+	font-size: 48px;
+	color: yellow;
+	text-shadow: -2px 0 red, 0 1px black, 1px 0 black, 0 -2px red;
+}
+form {
 	text-align: center;
 }
-#board{
+.mode {
+	display: inline-block;
+	height: 54px;
+	width: 54px;
+	background-size: 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-color: lightgrey;
+	padding: 0;
+	border: 0;
+	box-sizing: content-box;
+	overflow: hidden;
+}
+img {
+	height: 100%;
+	width: 100%;
+	border: 2px solid black;
+	box-sizing: border-box;
+}
+label > input {
+	visibility: hidden;
+	position: absolute;
+}
+label > input + img {
+	cursor: pointer;
+}
+label > input:checked + img {
+	border-color: yellow;
+}
+h3 {
+	margin-top: 10px;
+	margin-bottom: 5px;
+	font-family: helvetica, sans-serif;
+	font-size: 12px;
+}
+#flagCounter {
+	display: inline-block;
+	position: relative;
+	height: 30px;
+	width: 104px;
+	font-family: helvetica, sans-serif;
+	font-size: 24px;
+	color: red;
+	background-color: black;
+	padding-top: 6px;
+	border: 2px solid red;
+}
+#board {
 	display: inline-block;
 	position: relative;
 	height: 500px;
 	width: 500px;
 	font-size: 0;
-	margin-top: 40px;
+	margin-top: 10px;
 	padding: 0;
 	border: 2px solid black;
 	box-sizing: content-box;
 }
-.cell{
+.cell {
 	display: inline-block;
 	position: relative;
 	align-content: center;
@@ -27,6 +83,7 @@ form{
 	background-size: 100%;
 	background-repeat: no-repeat;
 	background-position: center;
+	background-color: grey;
 	font-size: 24px;
 	margin: 0;
 	padding: 13px 0 0 0;
@@ -34,6 +91,9 @@ form{
 	box-sizing: border-box;
 	overflow: hidden;
 }
-.pressed{
-	background-color: grey;
+.cell:not(.pressed):hover {
+	background-color: darkgrey;
+}
+.pressed {
+	background-color: lightgrey;
 }

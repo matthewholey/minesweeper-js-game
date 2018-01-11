@@ -7,19 +7,27 @@
 	<title>Minesweeper</title>
 </head>
 <body>
-	<h1>MINESWEEPER</h1>
-	<form name="modeSelectors">
-		<div>
-			<label for="radioMine">
-				<input type="radio" name="mode" id="radioMine">
-			</label>
-			<label for="radioFlag">
-				<input type="radio" name="mode" id="radioFlag">
-			</label>
+	<div id="container">
+		<h1>MINESWEEPER</h1>
+		<form>
+			<div class="mode">
+				<label for="radioMine">
+					<input type="radio" name="mode" id="radioMine">
+					<img src="img/mine.png">
+				</label>
+			</div>
+			<div class="mode">
+				<label for="radioFlag">
+					<input type="radio" name="mode" id="radioFlag">
+					<img src="img/flag.png">
+				</label>
+			</div>
+			<h3>Flags Left</h3>
+			<div id="flagCounter"></div>
+		</form>
+		<div id="board">
+				
 		</div>
-	</form>
-	<div id="board">
-			
 	</div>
 	<script type="text/javascript" src="js/main.js"></script>
 </body>
